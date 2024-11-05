@@ -15,3 +15,47 @@ dependencies = [
 packages = [
     "friendly_umbrella",
 ]
+
+
+[tool.ruff]
+# Use PEP8 line-length
+line-length = 79
+# Exclude common paths
+exclude = [
+    ".git",
+    ".tox",
+    "__pycache__",
+    "**/migrations/*.py",
+]
+
+[tool.ruff.lint]
+ignore = ["E731", ]
+# Select specific rulesets to use
+select = [
+    # pycodestyle
+    "E",
+    # pyflakes
+    "F",
+    # flake8-bugbear
+    "B",
+    # pyupgrade
+    "UP",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+]
+
+[tool.ruff.lint.isort.sections]
+"django" = ["django"]
+
+[tool.ruff.lint.isort]
+lines-after-imports = 2
+section-order = [
+    "future",
+    "standard-library",
+    "django",
+    "third-party",
+    "first-party",
+    "local-folder",
+]
