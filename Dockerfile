@@ -1,4 +1,4 @@
-FROM python:3.8-alpine
+FROM python:3.13-alpine
 
 # Ensure that the environment uses UTF-8 encoding by default
 ENV LANG en_US.UTF-8
