@@ -39,6 +39,7 @@ ALLOWED_HOSTS = ["*"]
 
 CSRF_TRUSTED_ORIGINS = ["https://*.cfpb.gov"]
 
+
 # Application definition
 
 INSTALLED_APPS = [
