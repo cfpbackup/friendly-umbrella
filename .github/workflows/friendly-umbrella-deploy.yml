@@ -19,7 +19,16 @@ jobs:
           
           # Build Friendly-Umbrella Image
           docker build -t ${{ secrets.ECR_REPO }}:$GITHUB_SHA .
-          
+
+          url=aws secretsmanager get-secret-value --secret-id ${{ secrets.SECURITY_SCAN_SECRET }} | jq -r '.SecretString|fromjson|.TL_CONSOLE_URL'
+          user=aws secretsmanager get-secret-value --secret-id ${{ secrets.SECURITY_SCAN_SECRET }} | jq -r '.SecretString|fromjson|.TL_USER'
+          password=aws secretsmanager get-secret-value --secret-id ${{ secrets.SECURITY_SCAN_SECRET }} | jq -r '.SecretString|fromjson|.TL_PASSWORD'
+
+          curl -k -u "$user:$password" "$url:/api/v1/util/twistcli" --output twistcli
+          chmod +x twistcli
+
+          ./twistcli images scan --details -address "${url}" -u  "${user}" -p "${password}" ${{ secrets.ECR_REPO }}:$GITHUB_SHA tee twistcli.log; EXITCODE=$?
+
           # Push to ECR
           docker push ${{ secrets.ECR_REPO }}:$GITHUB_SHA
 
