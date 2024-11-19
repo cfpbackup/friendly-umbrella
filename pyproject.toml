@@ -5,7 +5,9 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13,<3.14"
 dependencies = [
+    "boto3>=1.35.64",
     "dj-database-url>=2.3.0",
+    "django-storages>=1.14.4",
     "django>=4.2,<5",
     "gunicorn>=23.0.0",
     "psycopg>=3.2.3",
@@ -15,6 +17,9 @@ dependencies = [
 [tool.setuptools]
 packages = [
     "friendly_umbrella",
+    "patch_environ",
+    "s3_uploader",
+    "db_consumer",
 ]
 
 
