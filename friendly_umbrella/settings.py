@@ -10,7 +10,16 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+import dj_database_url
+
+from patch_environ import patch_environ
+
+
+# Optionally patch the environment with file-based variables.
+patch_environ(os.getenv("PATCH_ENVIRON_PATH"))
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -28,7 +37,7 @@ SECRET_KEY = (
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -73,17 +82,19 @@ TEMPLATES = [
     },
 ]
 
+# Optionally patch the environment with file-based variables.
+patch_environ(os.getenv("PATCH_ENVIRON_PATH"))
 WSGI_APPLICATION = "friendly_umbrella.wsgi.application"
 
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
+# Set from the DATABASE_URL environment variable
+# https://pypi.org/project/dj-database-url/
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    "default": dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR}/db.sqlite3",
+    ),
 }
 
 
