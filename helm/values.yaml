@@ -11,6 +11,9 @@ serviceAccount:
   create: false
   name: service-account-name
 
+config:
+  bucket: bucket_name
+
 mapping:
   enabled: true
   host: "friendly-umbrella.localhost"

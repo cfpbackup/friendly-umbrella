@@ -142,14 +142,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # If AWS credentials and a bucket are provided, use S3 for file upload storage
-AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
-AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
-if (
-    AWS_ACCESS_KEY_ID is not None
-    and AWS_SECRET_ACCESS_KEY is not None
-    and AWS_STORAGE_BUCKET_NAME is not None
-):
+
+if os.getenv("AWS_WEB_IDENTITY_TOKEN_FILE"):
+
     DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
     # Allow setting AWS_S3_ENDPOINT_URL to enable testing against a local S3
