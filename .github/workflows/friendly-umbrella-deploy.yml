@@ -52,3 +52,4 @@ jobs:
           --set image.repository=${{ secrets.ECR_REPO }}
           --set image.tag=$GITHUB_SHA
           --set mapping.host=${{ secrets.HOST }}
+          --set serviceAccount.name=${{ secrets.K8S_SERVICE_ACCOUNT }}

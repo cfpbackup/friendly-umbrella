@@ -9,10 +9,11 @@ service:
 
 serviceAccount:
   create: false
+  name: service-account-name
 
 mapping:
   enabled: true
-  host: "metro2.localhost"
+  host: "friendly-umbrella.localhost"
   ambassador_id:
     - "--apiVersion-v3alpha1-only--default"
   prefix: "/"
