@@ -37,7 +37,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-CSRF_TRUSTED_ORIGINS = ["https://friendly-umbrella-eks.dev-public.aws.cfpb.gov"]
+CSRF_TRUSTED_ORIGINS = ["*"]
 
 # Application definition
 
