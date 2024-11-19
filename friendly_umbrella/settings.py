@@ -82,6 +82,8 @@ TEMPLATES = [
     },
 ]
 
+# Optionally patch the environment with file-based variables.
+patch_environ(os.getenv("PATCH_ENVIRON_PATH"))
 WSGI_APPLICATION = "friendly_umbrella.wsgi.application"
 
 
