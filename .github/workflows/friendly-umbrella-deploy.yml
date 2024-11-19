@@ -63,4 +63,4 @@ jobs:
           --set image.tag=$GITHUB_SHA
           --set mapping.host=${{ secrets.HOST }}
           --set serviceAccount.name=${{ secrets.K8S_SERVICE_ACCOUNT }}
-          --set config.bucket=${{ secrets.BUCKET_NAME }}
+          --set config.AWS_STORAGE_BUCKET_NAME=${{ secrets.BUCKET_NAME }}

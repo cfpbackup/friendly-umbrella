@@ -12,7 +12,7 @@ serviceAccount:
   name: service-account-name
 
 config:
-  bucket: bucket_name
+  AWS_STORAGE_BUCKET_NAME: bucket_name
 
 mapping:
   enabled: true

@@ -146,6 +146,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 if os.getenv("AWS_WEB_IDENTITY_TOKEN_FILE"):
 
     DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+    AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
+
 
     # Allow setting AWS_S3_ENDPOINT_URL to enable testing against a local S3
     if os.getenv("AWS_S3_ENDPOINT_URL") is not None:
