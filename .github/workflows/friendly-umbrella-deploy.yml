@@ -6,34 +6,40 @@ jobs:
     runs-on:
       - codebuild-cfpb-cfgov-testing-gha-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
-      # Step 1: Checkout Friendly Umbrella Repo
       - name: Checkout Friendly-Umbrella
         uses: actions/checkout@v2
     
-      # Step 2: Build Docker Image
-      - name: Build Friendly-Umbrella Docker Image
-        env:
-          url: aws secretsmanager get-secret-value --secret-id ${{ secrets.SECURITY_SCAN_SECRET }} | jq -r '.SecretString|fromjson|.TL_CONSOLE_URL'
-          user: aws secretsmanager get-secret-value --secret-id ${{ secrets.SECURITY_SCAN_SECRET }} | jq -r '.SecretString|fromjson|.TL_USER'
-          password: aws secretsmanager get-secret-value --secret-id ${{ secrets.SECURITY_SCAN_SECRET }} | jq -r '.SecretString|fromjson|.TL_PASSWORD'
+      - name: Retrieve Security Scan Secrets
+        uses: aws-actions/aws-secretsmanager-get-secrets@v2
+        with:
+          secret-ids: |
+            , ${{ secrets.SECURITY_SCAN_SECRET }}
+          parse-json-secrets: true
 
-        run: |
+      - name: Build Docker Image
+        run: |      
 
-          # Log into AWS
-          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username ${{ secrets.AWS_USERNAME }} --password-stdin ${{ secrets.ECR_REGISTRY }} 
-          
           # Build Friendly-Umbrella Image
           docker build -t ${{ secrets.ECR_REPO }}:$GITHUB_SHA .
 
-          # curl -k -u "$user:$password" "$url:/api/v1/util/twistcli" --output twistcli
-          # chmod +x twistcli
+      - name: Security Scan with Twistlock
+        run: |  
 
-          # ./twistcli images scan --details -address "${url}" -u  "${user}" -p "${password}" ${{ secrets.ECR_REPO }}:$GITHUB_SHA tee twistcli.log; EXITCODE=$?
+          curl -k -u "$TL_USER:$TL_PASSWORD" "$TL_CONSOLE_URL/api/v1/util/twistcli" --output twistcli
+          chmod +x twistcli
 
+          ./twistcli images scan --details -address "${TL_CONSOLE_URL}" -u  "${TL_USER}" -p "${TL_PASSWORD}" ${{ secrets.ECR_REPO }}:$GITHUB_SHA tee twistcli.log; EXITCODE=$?
+
+      
+      - name: Push to ECR
+        run: |
+
+          # Login to ECR
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username ${{ secrets.AWS_USERNAME }} --password-stdin ${{ secrets.ECR_REGISTRY }} 
+          
           # Push to ECR
           docker push ${{ secrets.ECR_REPO }}:$GITHUB_SHA
 
-      # Step 3: Install Kubectl and Helm, Connecting to EKS    
       - name: Install K8s/Helm
         run: |
 
@@ -52,9 +58,10 @@ jobs:
           echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
           source ~/.bashrc
           kubectl version --client
+
+          # Update kubeconfig to point to EKS Cluster
           aws eks update-kubeconfig --name $CLUSTER_NAME --region us-east-1
 
-      # Step 4: Install Helm Chart on EKS
       - name: Install Helm Chart on EKS
         run: >
           helm upgrade --install friendly-umbrella ./helm 
@@ -62,5 +69,7 @@ jobs:
           --set image.repository=${{ secrets.ECR_REPO }}
           --set image.tag=$GITHUB_SHA
           --set mapping.host=${{ secrets.HOST }}
+          --set serviceAccount.name=${{ secrets.K8S_SERVICE_ACCOUNT }}
+          --set config.AWS_STORAGE_BUCKET_NAME=${{ secrets.BUCKET_NAME }}
           --set serviceAccount.name=${{ secrets.K8S_SERVICE_ACCOUNT }}
           --set config.AWS_STORAGE_BUCKET_NAME=${{ secrets.BUCKET_NAME }}
