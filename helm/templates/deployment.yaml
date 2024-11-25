@@ -25,7 +25,7 @@ spec:
       securityContext:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      initContainers: 
+      initContainers:
       {{- range .Values.initContainers }}
       - name: {{ .name }}
         image: "{{.image.repository}}:{{ .image.tag}}"
@@ -34,10 +34,10 @@ spec:
         - name: http
           containerPort: {{ .port }}
           protocol: TCP
-        {{ if .commands }}
-        commands:
-          {{- range .commands }}
-          - "{{ . }}"
+        {{- if .command }}
+        command:
+          {{- range .command }}
+          - {{ . | quote }}
           {{- end }}
         {{- end }}
         {{ if .args }}
@@ -47,17 +47,17 @@ spec:
           {{- end }}
         {{- end }}
         envFrom:
-          - configMapRef: 
+          - configMapRef:
               name: {{ $.Release.Name }}-configmap
         {{ if .env}}
-        env: 
+        env:
           {{- range .env }}
           - name: {{ .name }}
             value: {{ .value | quote }}
           {{- end }}
         {{- end }}
       {{- end }}
-      containers: 
+      containers:
       {{- range .Values.containers }}
       - name: {{ .name }}
         image: "{{.image.repository}}:{{ .image.tag}}"
@@ -66,10 +66,10 @@ spec:
         - name: http
           containerPort: {{ .port }}
           protocol: TCP
-        {{ if .commands }}
-        commands:
-          {{- range .commands }}
-          - "{{ . }}"
+        {{- if .command }}
+        command:
+          {{- range .command }}
+          - {{ . | quote }}
           {{- end }}
         {{- end }}
         {{ if .args }}
@@ -80,9 +80,9 @@ spec:
         {{- end }}
         {{ if .env}}
         envFrom:
-          - configMapRef: 
+          - configMapRef:
               name: {{ $.Release.Name }}-configmap
-        env: 
+        env:
           {{- range .env }}
           - name: {{ .name }}
             value: {{ .value | quote }}
