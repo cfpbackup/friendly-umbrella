@@ -9,3 +9,14 @@ service:
 
 serviceAccount:
   create: false
+  name: service-account-name
+
+config:
+  AWS_STORAGE_BUCKET_NAME: bucket_name
+
+mapping:
+  enabled: true
+  host: "friendly-umbrella.localhost"
+  ambassador_id:
+    - "--apiVersion-v3alpha1-only--default"
+  prefix: "/"
