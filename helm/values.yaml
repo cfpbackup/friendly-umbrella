@@ -13,7 +13,7 @@ initContainers:
     commands: ["sh", "-c"]
     args:
     - | 
-      python manage.py makemigrations && python manage.py migrate
+      python friendly-umbrella/manage.py makemigrations && python friendly-umbrella/manage.py migrate
 
 containers:
   - name: friendly-umbrella
