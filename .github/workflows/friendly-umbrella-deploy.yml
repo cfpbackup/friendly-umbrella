@@ -67,8 +67,10 @@ jobs:
         run: >
           helm upgrade --install friendly-umbrella ./helm
           -n ${{ secrets.NAMESPACE }} -f ./helm/values.yaml
-          --set image.repository=${{ secrets.ECR_REPO }}
-          --set image.tag=$GITHUB_SHA
+          --set initContainers[0].image.repository=${{ secrets.ECR_REPO }}
+          --set initContainers[0].image.tag=$GITHUB_SHA
+          --set containers[0].image.repository=${{ secrets.ECR_REPO }}
+          --set containers[0].image.tag=$GITHUB_SHA
           --set mapping.host=${{ secrets.HOST }}
           --set serviceAccount.name=${{ secrets.K8S_SERVICE_ACCOUNT }}
           --set config.AWS_STORAGE_BUCKET_NAME=${{ secrets.BUCKET_NAME }}
