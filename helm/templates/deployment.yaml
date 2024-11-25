@@ -46,6 +46,9 @@ spec:
           - "{{ . }}"
           {{- end }}
         {{- end }}
+        envFrom:
+          - configMapRef: 
+              name: {{ $.Release.Name }}-configmap
         {{ if .env}}
         env: 
           {{- range .env }}
@@ -76,6 +79,9 @@ spec:
           {{- end }}
         {{- end }}
         {{ if .env}}
+        envFrom:
+          - configMapRef: 
+              name: {{ $.Release.Name }}-configmap
         env: 
           {{- range .env }}
           - name: {{ .name }}

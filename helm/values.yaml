@@ -6,6 +6,7 @@ initContainers:
       repository: friendly-umbrella
       pullPolicy: IfNotPresent
       tag: "latest"
+    port: 8000
     env:
     - name: DJANGO_SETTINGS_MODULE
       value: "django_application.settings.helm_eks"
@@ -20,6 +21,7 @@ containers:
       repository: friendly-umbrella
       pullPolicy: IfNotPresent
       tag: "latest"
+    port: 8000
     env:
     - name: DJANGO_SETTINGS_MODULE
       value: "django_application.settings.helm_eks"
