@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata: 
     name: {{ .Release.Name }}-configmap
 data:
-    {{- with .Values.config }}
-    {{- toYaml . | nindent 4 }}
+    {{- range $key, $value := .Values.config }}
+    {{ $key }}: {{ $value | quote }}
     {{- end }}
 {{- end }}
