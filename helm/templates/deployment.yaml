@@ -25,21 +25,64 @@ spec:
       securityContext:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-
-      containers:
-        - name: {{ .Chart.Name }}
-          {{- with .Values.image }}
-          image: "{{ .repository }}:{{ .tag }}"
-          imagePullPolicy: {{ .pullPolicy }}
+      initContainers: 
+      {{- range .Values.initContainers }}
+      - name: {{ .name }}
+        image: "{{.image.repository}}:{{ .image.tag}}"
+        imagePullPolicy: {{ .image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: {{ .port }}
+          protocol: TCP
+        {{ if .commands }}
+        commands:
+          {{- range .commands }}
+          - "{{ . }}"
           {{- end }}
-          envFrom:
-            - configMapRef:
-                name: {{ .Release.Name }}-configmap
-          ports:
-            - name: http
-              containerPort: {{ .Values.service.port }}
-              protocol: TCP
-
+        {{- end }}
+        {{ if .args }}
+        args:
+          {{- range .args }}
+          - "{{ . }}"
+          {{- end }}
+        {{- end }}
+        {{ if .env}}
+        env: 
+          {{- range .env }}
+          - name: {{ .name }}
+            value: {{ .value | quote }}
+          {{- end }}
+        {{- end }}
+      {{- end }}
+      containers: 
+      {{- range .Values.containers }}
+      - name: {{ .name }}
+        image: "{{.image.repository}}:{{ .image.tag}}"
+        imagePullPolicy: {{ .image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: {{ .port }}
+          protocol: TCP
+        {{ if .commands }}
+        commands:
+          {{- range .commands }}
+          - "{{ . }}"
+          {{- end }}
+        {{- end }}
+        {{ if .args }}
+        args:
+          {{- range .args }}
+          - "{{ . }}"
+          {{- end }}
+        {{- end }}
+        {{ if .env}}
+        env: 
+          {{- range .env }}
+          - name: {{ .name }}
+            value: {{ .value | quote }}
+          {{- end }}
+        {{- end }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

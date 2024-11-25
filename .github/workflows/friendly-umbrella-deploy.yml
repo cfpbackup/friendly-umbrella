@@ -14,6 +14,7 @@ jobs:
         with:
           secret-ids: |
             , ${{ secrets.SECURITY_SCAN_SECRET }}
+            , ${{ secrets.RDS_CREDS_SECRET }}
           parse-json-secrets: true
 
       - name: Build Docker Image
@@ -71,3 +72,8 @@ jobs:
           --set mapping.host=${{ secrets.HOST }}
           --set serviceAccount.name=${{ secrets.K8S_SERVICE_ACCOUNT }}
           --set config.AWS_STORAGE_BUCKET_NAME=${{ secrets.BUCKET_NAME }}
+          --set config.RDS_HOST=$HOST
+          --set config.RDS_PASSWORD=$PASSWORD
+          --set config.RDS_USER=$USER
+          --set config.RDS_PORT=$PORT
+          --set config.RDS_DB_NAME=$NAME
