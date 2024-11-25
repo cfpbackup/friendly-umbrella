@@ -72,8 +72,8 @@ jobs:
           --set mapping.host=${{ secrets.HOST }}
           --set serviceAccount.name=${{ secrets.K8S_SERVICE_ACCOUNT }}
           --set config.AWS_STORAGE_BUCKET_NAME=${{ secrets.BUCKET_NAME }}
-          --set config.RDS_HOST=$HOST
-          --set config.RDS_PASSWORD=$PASSWORD
-          --set config.RDS_USER=$USER
-          --set config.RDS_PORT=$PORT
-          --set config.RDS_DB_NAME=$NAME
+          --set config.RDS_HOST=$RDS_HOST
+          --set config.RDS_PASSWORD=$RDS_PASSWORD
+          --set config.RDS_USER=$RDS_USER
+          --set config.RDS_PORT=$RDS_PORT
+          --set config.RDS_DB_NAME=$RDS_NAME
