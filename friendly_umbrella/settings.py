@@ -30,7 +30,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-xe9&^1#%wg%d-qjy861j5j*_yvf^m@_r-+jcqe0qt9($r4=4!k"
+SECRET_KEY = (
+    "django-insecure-xe9&^1#%wg%d-qjy861j5j*_yvf^m@_r-+jcqe0qt9($r4=4!k"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -57,7 +59,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    # "django.middleware.csrf.CsrfViewMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -83,8 +85,6 @@ TEMPLATES = [
     },
 ]
 
-# Optionally patch the environment with file-based variables.
-patch_environ(os.getenv("PATCH_ENVIRON_PATH"))
 WSGI_APPLICATION = "friendly_umbrella.wsgi.application"
 
 
@@ -140,15 +140,11 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
-# If AWS credentials and a bucket are provided, use S3 for file upload storage
-
-if os.getenv("AWS_WEB_IDENTITY_TOKEN_FILE"):
-
+# Use S3 for file storage if a bucket name is provided.
+if _aws_s3_bucket := os.getenv("AWS_STORAGE_BUCKET_NAME"):
     DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-    AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
+    AWS_STORAGE_BUCKET_NAME = _aws_s3_bucket
 
-
-    # Allow setting AWS_S3_ENDPOINT_URL to enable testing against a local S3
-    if os.getenv("AWS_S3_ENDPOINT_URL") is not None:
-        AWS_S3_ENDPOINT_URL = os.getenv("AWS_S3_ENDPOINT_URL")
+    # Allow testing against a mock S3 using Localstack and awslocal.
+    if _s3_endpoint_url := os.getenv("AWS_S3_ENDPOINT_URL"):
+        AWS_S3_ENDPOINT_URL = _s3_endpoint_url
