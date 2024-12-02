@@ -78,10 +78,10 @@ spec:
           - "{{ . }}"
           {{- end }}
         {{- end }}
-        {{ if .env}}
         envFrom:
           - configMapRef:
               name: {{ $.Release.Name }}-configmap
+        {{ if .env}}
         env:
           {{- range .env }}
           - name: {{ .name }}
