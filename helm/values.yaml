@@ -1,4 +1,24 @@
 # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
+
+initContainers:
+  - name: friendly-umbrella-init
+    image:
+      repository: friendly-umbrella
+      pullPolicy: IfNotPresent
+      tag: "latest"
+    port: 8000
+    command: ["sh", "-c"]
+    args:
+    - python manage.py migrate
+
+containers:
+  - name: friendly-umbrella
+    image:
+      repository: friendly-umbrella
+      pullPolicy: IfNotPresent
+      tag: "latest"
+    port: 8000
+
 image:
   repository: friendly-umbrella
   tag: "latest"
@@ -13,6 +33,7 @@ serviceAccount:
 
 config:
   AWS_STORAGE_BUCKET_NAME: bucket_name
+  DATABASE_URL: database_url
 
 mapping:
   enabled: true
